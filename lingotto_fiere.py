@@ -1,11 +1,14 @@
 class LingottoFiere:
     def __init__(self, nome):
         """Inizializza gli attributi e le strutture dati"""
+        self._nome = nome
         # TODO
-
-    """Aggiungere setter e getter se necessari"""
-    # TODO
-
+    @property
+    def nome(self):
+        return self.nome
+    @nome.setter
+    def nome(self, nuovo_nome):
+        self.nome = nuovo_nome
     def carica_file_dati(self, file_path):
         """Carica i dati (stand ed espositori) dal file"""
         # TODO
