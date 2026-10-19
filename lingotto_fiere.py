@@ -10,19 +10,18 @@ class LingottoFiere:
         self._nome = nome
         self.elenco_espositori = []
         self.elenco_stand = []
-        # TODO
     @property
     def nome(self):
-        return self.nome
+        return self._nome
     @nome.setter
     def nome(self, nuovo_nome):
-        self.nome = nuovo_nome
+        self._nome = nuovo_nome
 
     def carica_file_dati(self, file_path):
         """Carica i dati (stand ed espositori) dal file"""
         try:
             with open(file_path, "r", encoding="utf-8") as file:
-                lettore = csv.reader(file)
+                lettore = reader(file)
                 elenco_stand = []
                 elenco_espositori = []
                 for riga in lettore:
@@ -30,7 +29,7 @@ class LingottoFiere:
                     codice_stand = riga[0]
                     superficie = riga[1]
                     padiglione = riga[2]
-                    prezzo = riga[3]
+                    prezzo = float(riga[3])
                     if len(riga) > 4:
                         if riga[4].isdigit():
                             prese_elettriche = int(riga[4])
@@ -54,16 +53,47 @@ class LingottoFiere:
         except FileNotFoundError:
             print("File non trovato")
             return
-        # TODO
 
     def assegna_stand_a_espositore(self, codice_stand, codice_espositore):
         """Associa uno stand a un espositore"""
-        # TODO
+        if codice_stand not in self.elenco_stand:
+            raise Exception("Stand non trovato")
+        if codice_espositore not in self.elenco_espositori:
+            raise Exception("Espositore non trovato")
+        stand_trovato = None
+        for stand in self.elenco_stand:
+            if stand == codice_stand:
+                stand_trovato = stand
+                break
+        espositore_trovato = None
+        for espositore in self.elenco_espositori:
+            if espositore == codice_espositore:
+                espositore_trovato = espositore
+                break
+        if stand_trovato.espositore is not None:
+            raise Exception("Stand non disponibile")
+        for stand in self.elenco_stand:
+            if stand.espositore == espositore_trovato:
+                raise Exception("Espositore non disponibile")
+        stand_trovato.espositore = espositore_trovato
+        stand_trovato.non_disponibile()
+
 
     def elenca_espositori(self):
         """Stampa l'elenco degli espositori mostrando, per ognuno, lo stand a cui è associato, quando applicabile """
-        # TODO
+        for espositore in self.elenco_espositori:
+            stand_espositore = None
+            for stand in self.elenco_stand:
+                if stand.espositore == espositore:
+                    stand_espositore = stand.codice_stand
+                    break
+            if stand_espositore is None:
+                print(f"Dati espositore : {espositore}")
+            else:
+                print(f"Dati espositore : {espositore} \t Stand associato: {stand_espositore}")
+
+
 
     def stand_ordinati_per_prezzo(self):
         """Restituisce la lista ordinata degli stand in base al prezzo"""
-        # TODO
+        return sorted(self.elenco_stand)
